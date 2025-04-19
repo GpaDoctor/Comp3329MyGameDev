@@ -1092,8 +1092,8 @@ Transform:
   m_GameObject: {fileID: 1712107410}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.1, y: -2.87, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.1}
+  m_LocalPosition: {x: -6.02, y: -1.77, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1128448525}
@@ -1161,7 +1161,7 @@ MonoBehaviour:
   groundCheck: {fileID: 1128448525}
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   redHearts: {fileID: 1529722882988246178, guid: ed49551de972a114cb7fdd057e768c70, type: 3}
   whiteHearts: {fileID: 1287683870197808417, guid: a3231634b23dc804dbe4f23eb7398efd, type: 3}
   firstHeart: {x: -10.3, y: 4}
