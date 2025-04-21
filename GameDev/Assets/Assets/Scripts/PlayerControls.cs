@@ -18,7 +18,7 @@ public class PlayerControls : MonoBehaviour
     public GameObject redHearts;
     public GameObject whiteHearts;
     private GameObject[] instantiatedHearts;
-    public Vector2 firstHeart = new Vector2(-10.3f, 4f);
+    public Vector2 firstHeart = new Vector2(-8f, 4f);
 
 
     // Start is called before the first frame update
