@@ -69,7 +69,7 @@ public class PlayerControls : MonoBehaviour
     {
         DestroyAllHearts();
         string name = obj.gameObject.name;
-        //distinguish what is collided
+
         if (name == "enemy")
         {
             life -= 1;
