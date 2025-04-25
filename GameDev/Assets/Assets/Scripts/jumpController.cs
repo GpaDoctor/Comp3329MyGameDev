@@ -47,6 +47,8 @@ public class jumpController : MonoBehaviour // Renamed to be more descriptive
     private bool isGrounded;
     private bool isFacingRight = true;
 
+    private bool isHidden = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -114,5 +116,12 @@ public class jumpController : MonoBehaviour // Renamed to be more descriptive
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
+    }
+    public void SetHidden(bool hidden)
+    {
+        isHidden = hidden;
+        GetComponent<Collider2D>().enabled = !hidden;
+        GetComponent<SpriteRenderer>().enabled = !hidden;
+        // Disable other components as needed
     }
 }

@@ -39,7 +39,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2490211356366825658}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -79,10 +79,11 @@ GameObject:
   - component: {fileID: 5146861889382560963}
   - component: {fileID: 4806713566304622277}
   - component: {fileID: 3278362057742266156}
-  - component: {fileID: 7894201543321362544}
+  - component: {fileID: 7461409917467580925}
+  - component: {fileID: 6002131066956956538}
   m_Layer: 0
   m_Name: cat
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,7 +97,7 @@ Transform:
   m_GameObject: {fileID: 5654239296992078161}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.32, y: -2.88, z: 0}
+  m_LocalPosition: {x: -6.4, y: -2.24, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -170,7 +171,7 @@ Rigidbody2D:
   m_Mass: 10
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 50
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -227,7 +228,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 10, y: 10}
   m_EdgeRadius: 0
---- !u!114 &7894201543321362544
+--- !u!114 &7461409917467580925
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -236,15 +237,30 @@ MonoBehaviour:
   m_GameObject: {fileID: 5654239296992078161}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd38fe0f16ed0534b905a641b1e7cf06, type: 3}
+  m_Script: {fileID: 11500000, guid: b75ae12cd6df59341803b982795624c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
-  v: {x: 0, y: 0}
+  moveSpeed: 8
+  jumpForce: 20
+  airControlMultiplier: 0.7
+  variableJumpHeightMultiplier: 0.5
   groundCheck: {fileID: 7808763715649364449}
-  GroundLayer:
+  groundCheckSize: {x: 1.8, y: 0.3}
+  groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
+--- !u!114 &6002131066956956538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5654239296992078161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378b37e021aa46644964e172bc3e3743, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   redHearts: {fileID: 1529722882988246178, guid: ed49551de972a114cb7fdd057e768c70, type: 3}
   whiteHearts: {fileID: 1287683870197808417, guid: a3231634b23dc804dbe4f23eb7398efd, type: 3}
   firstHeart: {x: -8, y: 4}
