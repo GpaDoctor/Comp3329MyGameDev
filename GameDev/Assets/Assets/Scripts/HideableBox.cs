@@ -20,7 +20,7 @@ public class HideableBox : MonoBehaviour
             isPlayerHidden = true;
         }
     }
-
+    
     void Update()
     {
         if (isPlayerHidden && Input.GetKeyDown(KeyCode.E))
