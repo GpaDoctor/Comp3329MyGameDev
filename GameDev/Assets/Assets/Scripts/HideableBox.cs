@@ -1,25 +1,23 @@
-using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine;
 
 public class HideableBox : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private GameObject hiddenPlayerPrefab; // Assign in Inspector
-    [SerializeField] private Transform hidePosition; // Assign empty child object in Inspector
+    [SerializeField] private Transform boxPosition; // Assign the box's position in the Inspector
+    [SerializeField] private Collider2D boxCollider; // Assign the box's collider in the Inspector
 
     private GameObject currentPlayer;
-    private GameObject hiddenPlayerInstance;
     private bool isPlayerHidden = false;
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && !isPlayerHidden && currentPlayer == null)
+        if (other.CompareTag("Player") && !isPlayerHidden)
         {
             currentPlayer = other.gameObject;
-            HidePlayer();
+
+            // Hide the player
+            currentPlayer.SetActive(false);
+            isPlayerHidden = true;
         }
     }
 
@@ -27,54 +25,23 @@ public class HideableBox : MonoBehaviour
     {
         if (isPlayerHidden && Input.GetKeyDown(KeyCode.E))
         {
-            RevealPlayer();
+            StartCoroutine(ReappearWithDelay());
         }
     }
 
-    void HidePlayer()
+    IEnumerator ReappearWithDelay()
     {
-        // Disable player components instead of destroying
-        currentPlayer.GetComponent<SpriteRenderer>().enabled = false;
-        currentPlayer.GetComponent<Collider2D>().enabled = false;
-        
-        // Create hidden player visual
-        hiddenPlayerInstance = Instantiate(
-            hiddenPlayerPrefab,
-            hidePosition.position,
-            hidePosition.rotation,
-            transform // Parent to box
-        );
-        
-        isPlayerHidden = true;
-        Debug.Log("Player hidden!");
-    }
+        // Temporarily disable the box collider
+        boxCollider.enabled = false;
 
-    void RevealPlayer()
-    {
-        StartCoroutine(RevealPlayerWithDelay());
-    }
-
-    IEnumerator RevealPlayerWithDelay()
-    {
-        // Re-enable player
-        currentPlayer.GetComponent<SpriteRenderer>().enabled = true;
-        currentPlayer.GetComponent<Collider2D>().enabled = true;
-        currentPlayer.transform.position = hidePosition.position;
-
-        // Destroy hidden visual
-        if (hiddenPlayerInstance != null)
-        {
-            Destroy(hiddenPlayerInstance);
-        }
-
+        // Reappear the player at the box's position
+        currentPlayer.transform.position = boxPosition.position;
+        currentPlayer.SetActive(true);
         isPlayerHidden = false;
-        Debug.Log("Player revealed!");
 
-        // Wait for 5 seconds
+        // Wait for 1 second before re-enabling the box collider
         yield return new WaitForSeconds(1f);
 
-        // Clear reference after delay
-        currentPlayer = null;
-        Debug.Log("Player fully revealed after delay!");
+        boxCollider.enabled = true;
     }
 }
