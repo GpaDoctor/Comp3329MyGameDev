@@ -7,12 +7,13 @@ public class PlayerControls : MonoBehaviour
 {
     float h_speed = 10;
     float v_speed = 250;
-    public Rigidbody2D rb;
+    Rigidbody2D rb;
     public Vector2 v;
-    float jumpPower = 10;
-    public Transform groundCheck;
-    public LayerMask GroundLayer;
-    bool isGrounded;
+    // int jumpPower = 15;
+
+    // public Transform groundCheck;
+    // public LayerMask groundLayer;
+    // bool isGrounded;
 
     public static int life = 5;
     public GameObject redHearts;
@@ -36,7 +37,7 @@ public class PlayerControls : MonoBehaviour
 
     void Update()
     {
-        isGrounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(10.0f, 0.7f), CapsuleDirection2D.Horizontal, 0, GroundLayer);
+        // isGrounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(1.8f, 0.3f), CapsuleDirection2D.Horizontal, 0, groundLayer);
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             v.x = -h_speed;
@@ -48,11 +49,12 @@ public class PlayerControls : MonoBehaviour
             v.x = h_speed;
             rb.velocity = v;
         }
-        else if (Input.GetKey(KeyCode.UpArrow) && isGrounded)
-        {
-            v.y = v_speed;
-            rb.velocity = v;
-        }
+        // else if (Input.GetButtonDown("Jump") && isGrounded)
+        // {
+        //     // v.y = v_speed;
+        //     // rb.velocity = v;
+        //     rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+        // }
 
         else
         {
@@ -69,7 +71,7 @@ public class PlayerControls : MonoBehaviour
     {
         DestroyAllHearts();
         string name = obj.gameObject.name;
-        //distinguish what is collided
+
         if (name == "enemy")
         {
             life -= 1;
