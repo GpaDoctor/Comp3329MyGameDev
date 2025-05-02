@@ -8,7 +8,7 @@ public class FinishPoint : MonoBehaviour
 
     private void Update()
     {
-        if (playerInTrigger && Input.GetKeyDown(KeyCode.DownArrow))
+        if (playerInTrigger)
         {
             // Load the next level or perform any other action
             sceneController.instance.NextLevel();

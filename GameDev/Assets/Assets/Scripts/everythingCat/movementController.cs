@@ -2,35 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// public class jumpController : MonoBehaviour
-// {
-//     Rigidbody2D rb;
-//     int jumpPower = 20;
 
-//     public Transform groundCheck;
-//     public LayerMask groundLayer;
-//     bool isGrounded;
 
-//     // Start is called before the first frame update
-//     void Start()
-//     {
-//         rb = GetComponent<Rigidbody2D>();   
-//     }
-
-//     // Update is called once per frame
-//     void Update()
-//     {   
-//         isGrounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(1.8f, 0.3f), CapsuleDirection2D.Horizontal, 0, groundLayer);
-//         if (Input.GetButtonDown("Jump") && isGrounded){
-//             rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-//         }
-        
-//     }
-// }
-
-// using UnityEngine;
-
-public class jumpController : MonoBehaviour // Renamed to be more descriptive
+public class movementController : MonoBehaviour // Renamed to be more descriptive
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 8f;
@@ -47,7 +21,6 @@ public class jumpController : MonoBehaviour // Renamed to be more descriptive
     private bool isGrounded;
     private bool isFacingRight = true;
 
-    private bool isHidden = false;
 
     void Start()
     {
@@ -117,11 +90,5 @@ public class jumpController : MonoBehaviour // Renamed to be more descriptive
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube(groundCheck.position, groundCheckSize);
     }
-    public void SetHidden(bool hidden)
-    {
-        isHidden = hidden;
-        GetComponent<Collider2D>().enabled = !hidden;
-        GetComponent<SpriteRenderer>().enabled = !hidden;
-        // Disable other components as needed
-    }
+
 }
