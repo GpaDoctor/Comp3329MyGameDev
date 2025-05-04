@@ -171,5 +171,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd6ef59a40b4e62418d7a6e5a73cfb23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 1
-  pickupEffect: {fileID: 0}
+  color: 3
+  isCollected: 0
