@@ -169,7 +169,7 @@ public class EnemySpawner : MonoBehaviour
         isSpawning = false;
     }
 
-    public void ResumeSpawning()
+    public void ResumeSpawning() 
     {
         if (!isSpawning)
         {
