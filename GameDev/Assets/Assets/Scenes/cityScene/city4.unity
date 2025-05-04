@@ -4069,13 +4069,15 @@ MonoBehaviour:
   destroyY: -10
   enemyPrefabs:
   - {fileID: 1368917058580898144, guid: d013018b9eeae504094e7190b84e05e2, type: 3}
-  - {fileID: 807588289987561881, guid: a3e71fcdbc67f3c46855e1164a72408e, type: 3}
+  - {fileID: 807588289987561881, guid: 34d7a6e50b7a5eb48943445717857bad, type: 3}
   keyPrefabs:
-  - {fileID: 4821088820753979065, guid: 97bee9ddaa77369449fa57fb0d490616, type: 3}
-  - {fileID: 4006908062517060189, guid: 1d263786a0a813946bd819e1af14a2b8, type: 3}
-  - {fileID: 2897534262922926883, guid: a82dd50b03c675f4a9d284d026cef3b9, type: 3}
-  - {fileID: 2256444926228206235, guid: 92aa316d7ad551949b41a88a3e1806cc, type: 3}
-  - {fileID: 4472319525522117486, guid: 9333aafdfe2e17b4687d81fcdb3f1f2a, type: 3}
+  - {fileID: 3630907174680823544, guid: a55edac0f0954e64cb4f95353d4a1b5d, type: 3}
+  - {fileID: 1488003580486929084, guid: beaf8a9141a61974e8678400b5891e3f, type: 3}
+  - {fileID: 1488003580486929084, guid: a77dec428e7d20749be023190cc63305, type: 3}
+  - {fileID: 1488003580486929084, guid: c163197a364435a49b8cbf6faf6f3265, type: 3}
+  - {fileID: 1488003580486929084, guid: 9cd83aa80c1a6b44d8854d14a8c3654d, type: 3}
+  - {fileID: 1488003580486929084, guid: 3fc1ac1bca5e1364caedc1517c9a7a28, type: 3}
+  - {fileID: 1488003580486929084, guid: 35ce08387ae1ee94998f143545b29252, type: 3}
   spawnRate: 0.1
   keyChance: 0.3
 --- !u!4 &1807580382
