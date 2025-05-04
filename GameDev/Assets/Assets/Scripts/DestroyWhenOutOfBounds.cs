@@ -4,13 +4,51 @@ using UnityEngine;
 
 // using UnityEngine;
 
+// public class DestroyWhenOutOfBounds : MonoBehaviour
+// {
+//     private float boundaryY;
+
+//     public void SetBoundary(float yPosition)
+//     {
+//         boundaryY = yPosition;
+//     }
+
+//     void Update()
+//     {
+//         if (transform.position.y < boundaryY)
+//         {
+//             Destroy(gameObject);
+//         }
+//     }
+// }
+
+
+// using UnityEngine;
+
 public class DestroyWhenOutOfBounds : MonoBehaviour
 {
-    private float boundaryY;
+    [Header("Settings")]
+    [Tooltip("Y position where objects get destroyed")]
+    [SerializeField] private float boundaryY = -10f;
+    
+    [Tooltip("Get boundary from spawner automatically")]
+    [SerializeField] private bool useSpawnerBoundary = true;
 
-    public void SetBoundary(float yPosition)
+    public void Initialize(float newBoundary)
     {
-        boundaryY = yPosition;
+        boundaryY = newBoundary;
+    }
+
+    void Start()
+    {
+        if (useSpawnerBoundary)
+        {
+            var spawner = FindObjectOfType<EnemySpawner>();
+            if (spawner != null)
+            {
+                boundaryY = spawner.DestroyY; // Now matches the property name
+            }
+        }
     }
 
     void Update()
@@ -20,4 +58,15 @@ public class DestroyWhenOutOfBounds : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    #if UNITY_EDITOR
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(
+            new Vector3(-100, boundaryY, 0),
+            new Vector3(100, boundaryY, 0)
+        );
+    }
+    #endif
 }

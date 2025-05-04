@@ -1,138 +1,222 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+// public class EnemySpawner : MonoBehaviour
+// {
+//     [Header("Spawn Area")]
+//     [SerializeField] private float minX = -5f;    // Left boundary
+//     [SerializeField] private float maxX = 5f;     // Right boundary
+//     [SerializeField] private float spawnY = 10f;  // Spawn height
+//     [SerializeField] private float destroyY = -5f; // Destruction height
+
+//     [Header("Spawning")]
+//     [SerializeField] private GameObject[] enemyPrefabs;
+//     [SerializeField] private GameObject[] keyPrefabs;
+//     [SerializeField] [Range(0.1f, 5f)] private float spawnRate = 1f;
+//     [SerializeField] [Range(0, 1)] private float keyChance = 0.3f;
+
+//     void Start()
+//     {
+//         if (enemyPrefabs.Length == 0 && keyPrefabs.Length == 0)
+//         {
+//             Debug.LogError("No spawn prefabs assigned!", this);
+//             enabled = false;
+//             return;
+//         }
+
+//         StartCoroutine(SpawnRoutine());
+//     }
+
+//     IEnumerator SpawnRoutine()
+//     {
+//         while (true)
+//         {
+//             yield return new WaitForSeconds(spawnRate);
+            
+//             Vector3 spawnPos = new Vector3(
+//                 Random.Range(minX, maxX),
+//                 spawnY,
+//                 0
+//             );
+
+//             if (ShouldSpawnKey())
+//             {
+//                 SpawnRandom(keyPrefabs, spawnPos, "Key");
+//             }
+//             else
+//             {
+//                 SpawnRandom(enemyPrefabs, spawnPos, "Enemy");
+//             }
+//         }
+//     }
+
+//     bool ShouldSpawnKey()
+//     {
+//         return keyPrefabs.Length > 0 && Random.value <= keyChance;
+//     }
+
+//     void SpawnRandom(GameObject[] prefabs, Vector3 position, string tag)
+//     {
+//         if (prefabs.Length == 0) return;
+        
+//         GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
+//         if (!prefab) return;
+
+//         GameObject obj = Instantiate(prefab, position, Quaternion.identity);
+//         obj.tag = tag;
+        
+//         // Add auto-destroy component if it doesn't exist
+//         if (!obj.GetComponent<DestroyWhenOutOfBounds>())
+//         {
+//             var destroyer = obj.AddComponent<DestroyWhenOutOfBounds>();
+//             destroyer.SetBoundary(destroyY);
+//         }
+//     }
+
+//     void OnDrawGizmosSelected()
+//     {
+//         // Draw spawn area box
+//         Gizmos.color = new Color(0, 1, 1, 0.3f); // Cyan with transparency
+//         Vector3 center = new Vector3((minX + maxX)/2, spawnY, 0);
+//         Vector3 size = new Vector3(maxX - minX, 1, 0);
+//         Gizmos.DrawCube(center, size);
+        
+//         // Draw spawn area boundaries
+//         Gizmos.color = Color.cyan;
+//         Gizmos.DrawWireCube(center, size);
+        
+//         // Draw destroy line
+//         Gizmos.color = Color.red;
+//         Gizmos.DrawLine(
+//             new Vector3(minX, destroyY, 0),
+//             new Vector3(maxX, destroyY, 0)
+//         );
+//     }
+// }
+
 using UnityEngine;
 using System.Collections;
 
-using UnityEngine;
-
-
 public class EnemySpawner : MonoBehaviour
 {
-    [Header("Spawn Area Settings")]
-    [SerializeField] private float spawnHeight = 10f; // Y-position where objects spawn
-    [SerializeField] private float spawnWidth = 8f;   // X-axis spawn range
-    [SerializeField] private float destroyHeight = -5f; // Y-position where objects get destroyed
+    [Header("Spawn Area")]
+    [SerializeField] private float minX = -5f;
+    [SerializeField] private float maxX = 5f;
+    [SerializeField] private float spawnY = 10f;
 
-    [Header("Spawn Behavior")]
+    public float DestroyY => destroyY;
+    [SerializeField] public float destroyY = -5f;
+
+    [Header("Spawning")]
     [SerializeField] private GameObject[] enemyPrefabs;
     [SerializeField] private GameObject[] keyPrefabs;
     [SerializeField] [Range(0.1f, 5f)] private float spawnRate = 1f;
-    [SerializeField] [Range(0, 1)] private float keySpawnChance = 0.3f;
+    [SerializeField] [Range(0, 1)] private float keyChance = 0.3f;
 
-    private Camera mainCamera;
-    private float horizontalBoundary;
+    private Coroutine spawnCoroutine;
+    private bool isSpawning = true;
 
     void Start()
     {
-        mainCamera = Camera.main;
-        horizontalBoundary = mainCamera.orthographicSize * mainCamera.aspect;
-        
-        if (!ValidatePrefabs())
+        if (enemyPrefabs.Length == 0 && keyPrefabs.Length == 0)
         {
-            Debug.LogError("Spawner disabled due to invalid setup!", this);
+            Debug.LogError("No spawn prefabs assigned!", this);
             enabled = false;
             return;
         }
+
+        spawnCoroutine = StartCoroutine(SpawnRoutine());
         
-        StartCoroutine(SpawnObjects());
+        // Listen for key pickup events
+        PlayerKeyController.OnKeyPickedUp += StopSpawning;
+        PlayerKeyController.OnKeyUsed += ResumeSpawning;
     }
-    IEnumerator SpawnObjects()
+
+    void OnDestroy()
     {
-        while (true)
+        // Clean up event subscriptions
+        PlayerKeyController.OnKeyPickedUp -= StopSpawning;
+        PlayerKeyController.OnKeyUsed -= ResumeSpawning;
+    }
+
+    IEnumerator SpawnRoutine()
+    {
+        while (isSpawning)
         {
-            SpawnRandomObject();
             yield return new WaitForSeconds(spawnRate);
+            
+            Vector3 spawnPos = new Vector3(
+                Random.Range(minX, maxX),
+                spawnY,
+                0
+            );
+
+            if (ShouldSpawnKey())
+            {
+                SpawnRandom(keyPrefabs, spawnPos, "Key");
+            }
+            else
+            {
+                SpawnRandom(enemyPrefabs, spawnPos, "Enemy");
+            }
         }
     }
 
-    private void SpawnRandomObject()
+    public void StopSpawning()
     {
-        Vector3 spawnPos = new Vector3(
-            Random.Range(-spawnWidth/2, spawnWidth/2),
-            spawnHeight,
-            0
-        );
+        isSpawning = false;
+    }
 
-        if (Random.value <= keySpawnChance)
+    public void ResumeSpawning()
+    {
+        if (!isSpawning)
         {
-            SpawnKey(spawnPos);
-        }
-        else if (enemyPrefabs.Length > 0)
-        {
-            SpawnEnemy(spawnPos);
+            isSpawning = true;
+            spawnCoroutine = StartCoroutine(SpawnRoutine());
         }
     }
-    private void SpawnKey(Vector3 position)
-    {
-        // Safely get random key prefab
-        if (keyPrefabs.Length == 0) return;
-        GameObject keyPrefab = keyPrefabs[Random.Range(0, keyPrefabs.Length)];
-        if (keyPrefab == null) return;
 
-        // Instantiate key
-        GameObject key = Instantiate(keyPrefab, position, Quaternion.identity);
-        key.tag = "Key";
+    bool ShouldSpawnKey()
+    {
+        return keyPrefabs.Length > 0 && Random.value <= keyChance;
+    }
+
+    void SpawnRandom(GameObject[] prefabs, Vector3 position, string tag)
+    {
+        if (prefabs.Length == 0) return;
         
-        // Ensure Key component exists
-        Key keyScript = key.GetComponent<Key>();
-        if (keyScript == null)
-        {
-            keyScript = key.AddComponent<Key>();
-        }
+        GameObject prefab = prefabs[Random.Range(0, prefabs.Length)];
+        if (!prefab) return;
 
-        // Add auto-destruction component
-        DestroyWhenOutOfBounds destroyer = key.GetComponent<DestroyWhenOutOfBounds>();
-        if (destroyer == null)
-        {
-            destroyer = key.AddComponent<DestroyWhenOutOfBounds>();
-        }
-        destroyer.SetBoundary(destroyHeight);
-    }
-
-    private void SpawnEnemy(Vector3 position)
-    {
-        GameObject enemy = Instantiate(
-            enemyPrefabs[Random.Range(0, enemyPrefabs.Length)],
-            position,
-            Quaternion.identity
-        );
+        GameObject obj = Instantiate(prefab, position, Quaternion.identity);
+        obj.tag = tag;
         
-        enemy.tag = "Enemy";
-        enemy.AddComponent<DestroyWhenOutOfBounds>().SetBoundary(destroyHeight);
+        // if (!obj.GetComponent<DestroyWhenOutOfBounds>())
+        // {
+        //     var destroyer = obj.AddComponent<DestroyWhenOutOfBounds>();
+        //     destroyer.SetBoundary(destroyY);
+        // }
+            var destroyer = obj.GetComponent<DestroyWhenOutOfBounds>() ?? obj.AddComponent<DestroyWhenOutOfBounds>();
+            destroyer.Initialize(destroyY); // Changed from SetBoundary to Initialize
+        
     }
 
-    private bool ValidatePrefabs()
-    {
-        // Ensure enemyPrefabs and keyPrefabs arrays are not empty
-        if (enemyPrefabs == null || enemyPrefabs.Length == 0)
-        {
-            Debug.LogError("Enemy prefabs are not assigned or empty.", this);
-            return false;
-        }
-
-        if (keyPrefabs == null || keyPrefabs.Length == 0)
-        {
-            Debug.LogError("Key prefabs are not assigned or empty.", this);
-            return false;
-        }
-
-        return true;
-    }
-    
-    #if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
-        // Draw spawn area boundaries
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireCube(
-            new Vector3(0, spawnHeight, 0),
-            new Vector3(spawnWidth, 0.5f, 0)
-        );
+        Gizmos.color = new Color(0, 1, 1, 0.3f);
+        Vector3 center = new Vector3((minX + maxX)/2, spawnY, 0);
+        Vector3 size = new Vector3(maxX - minX, 1, 0);
+        Gizmos.DrawCube(center, size);
         
-        // Draw destroy line
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(center, size);
+        
         Gizmos.color = Color.red;
         Gizmos.DrawLine(
-            new Vector3(-horizontalBoundary, destroyHeight, 0),
-            new Vector3(horizontalBoundary, destroyHeight, 0)
+            new Vector3(minX, destroyY, 0),
+            new Vector3(maxX, destroyY, 0)
         );
     }
-    #endif
 }

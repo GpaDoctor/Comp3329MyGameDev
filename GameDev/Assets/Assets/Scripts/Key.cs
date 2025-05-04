@@ -29,9 +29,9 @@ public class Key : MonoBehaviour
         // if (pickupEffect != null)
         //     Instantiate(pickupEffect, transform.position, Quaternion.identity);
     }
-    void Update()
-    {
-        if (transform.position.y < -10f)
-            Destroy(gameObject);
-    }
+    // void Update()
+    // {
+    //     if (transform.position.y < -10f)
+    //         Destroy(gameObject);
+    // }
 }
